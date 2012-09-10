@@ -3,5 +3,5 @@
 *.exp
 *.ilk
 *.Release
-*
 *.Debug
+tmp

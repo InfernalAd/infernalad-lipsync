@@ -488,10 +488,9 @@ void Engine::spectrumChanged(const FrequencySpectrum &spectrum)
     ENGINE_DEBUG << "Engine::spectrumChanged" << "pos" << m_spectrumPosition;
     if (m_samples.size() != 0)
     {
-        char curPhoneme;
+        char curPhoneme  = '~';
         FrequencySpectrum smpl = const_cast<FrequencySpectrum&>(spectrum);
 
-        bool changed = false;
         FrequencySpectrum best = m_samples[0];
         float diff = 0.15;//Can you see, it's magic!
         float curDiff=0;
@@ -501,18 +500,10 @@ void Engine::spectrumChanged(const FrequencySpectrum &spectrum)
             qDebug() << curDiff << m_samples[i].phoneme();
             if ((curDiff < diff) && (curDiff != 0))
             {
-                changed = true;
+                curPhoneme = best.phoneme();
                 best = m_samples[i];
                 diff = curDiff;
             }
-        }
-        if (changed)
-        {
-            curPhoneme = best.phoneme();
-        }
-        else
-        {
-            curPhoneme = '~';
         }
 
         qDebug() << curPhoneme;

@@ -57,6 +57,9 @@
 #include "QFile"
 #include "QDomElement"
 
+#include "spectrograph.h"
+#include "spectrumtable.h"
+
 #ifdef DUMP_CAPTURED_AUDIO
 #define DUMP_DATA
 #endif
@@ -326,6 +329,8 @@ private:
     QVector<FrequencySpectrum>   m_samples;
 
     char _lastPhoneme;
+
+    SpectrumTable * m_table;
 
 #ifdef DUMP_DATA
     QDir                m_outputDir;

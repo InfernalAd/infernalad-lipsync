@@ -121,6 +121,7 @@ Engine::Engine(QObject *parent)
 
     initialize();
 
+
 #ifdef DUMP_DATA
     createOutputDir();
 #endif
@@ -356,6 +357,19 @@ void Engine::insertSample(FrequencySpectrum sample)
 {
     qDebug() << "sample for" << sample.phoneme() << "phoneme loaded." << sample.count();
     m_samples.push_back(sample);
+//    Spectrograph * s = new Spectrograph();
+
+
+//    s->setWindowTitle(QString("sample spectrum:")+QChar(sample.phoneme()));
+//    s->resize(100,100);
+//    s->setParams(10,0,1000);
+//    s->spectrumChanged(sample);
+//    s->show();
+
+
+    QString str = QString("sample spectrum for ") + QChar(sample.phoneme());
+    m_table->addSpectrum(sample,str);
+    m_table->showMaximized();
 }
 
 
@@ -479,7 +493,7 @@ void Engine::spectrumChanged(const FrequencySpectrum &spectrum)
 
         bool changed = false;
         FrequencySpectrum best = m_samples[0];
-        float diff = 0.1;//Can you see, it's magic!
+        float diff = 0.15;//Can you see, it's magic!
         float curDiff=0;
         for (int i=0;i!=m_samples.size();i++)
         {
@@ -604,6 +618,8 @@ bool Engine::initialize()
     ENGINE_DEBUG << "Engine::initialize" << "m_bufferLength" << m_bufferLength;
     ENGINE_DEBUG << "Engine::initialize" << "m_dataLength" << m_dataLength;
     ENGINE_DEBUG << "Engine::initialize" << "format" << m_format;
+
+    m_table = new SpectrumTable;
 
     return result;
 }

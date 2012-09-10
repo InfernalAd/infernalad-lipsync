@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     levelmeter.cpp \
     frequencyspectrum.cpp \
     engine.cpp \
-    lipwidget.cpp
+    lipwidget.cpp \
+    spectrumtable.cpp
 
 HEADERS  += mainwindow.h \
     fftreal/TestWhiteNoiseGen.hpp \
@@ -91,10 +92,12 @@ HEADERS  += mainwindow.h \
     levelmeter.h \
     frequencyspectrum.h \
     engine.h \
-    lipwidget.h
+    lipwidget.h \
+    spectrumtable.h
 
 FORMS    += mainwindow.ui \
-    lipwidget.ui
+    lipwidget.ui \
+    spectrumtable.ui
 
 OTHER_FILES += \
     fftreal/testapp.dpr \

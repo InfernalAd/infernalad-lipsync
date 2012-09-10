@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phonemes>
+
+	<phoneme char="o" path="phonemes/O_2.wav" />
+	<phoneme char="o" path="phonemes/O_3.wav" />
+
+	<phoneme char="e" path="phonemes/E_2.wav" />
+	<phoneme char="e" path="phonemes/E_3.wav" />
+
+	<phoneme char="a" path="phonemes/A_2.wav" />
+	<phoneme char="a" path="phonemes/A_3.wav" />
+
+	<phoneme char="u" path="phonemes/U_2.wav" />
+	<phoneme char="u" path="phonemes/U_3.wav" />
+</phonemes>

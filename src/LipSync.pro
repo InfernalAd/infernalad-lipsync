@@ -6,6 +6,10 @@
 
 QT       += core gui multimedia xml
 
+DESTDIR = ../bin
+MOC_DIR = ../tmp
+OBJECTS_DIR = ../tmp
+
 TARGET = LipSync
 TEMPLATE = app
 

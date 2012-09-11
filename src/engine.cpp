@@ -369,7 +369,11 @@ void Engine::insertSample(FrequencySpectrum sample)
 
     QString str = QString("sample spectrum for ") + QChar(sample.phoneme());
     m_table->addSpectrum(sample,str);
-    m_table->showMaximized();
+}
+
+void Engine::showSampleTable()
+{
+    m_table->show();
 }
 
 

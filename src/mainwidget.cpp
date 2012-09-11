@@ -75,6 +75,7 @@ MainWidget::MainWidget(QWidget *parent)
     ,   m_pauseButton(new QPushButton(this))
     ,   m_playButton(new QPushButton(this))
     ,   m_settingsButton(new QPushButton(this))
+    ,   m_spectrumTableButton(new QPushButton(this))
     ,   m_infoMessage(new QLabel(tr("Select a mode to begin"), this))
     ,   m_infoMessageTimerId(NullTimerId)
     ,   m_settingsDialog(new SettingsDialog(
@@ -267,6 +268,8 @@ void MainWidget::createUi()
 
     m_modeButton->setText(tr("Mode"));
 
+    m_spectrumTableButton->setText("Spectrum table");
+
     m_recordIcon = QIcon(":/images/record.png");
     m_recordButton->setIcon(m_recordIcon);
     m_recordButton->setEnabled(false);
@@ -298,6 +301,7 @@ void MainWidget::createUi()
     buttonPanelLayout->addWidget(m_pauseButton);
     buttonPanelLayout->addWidget(m_playButton);
     buttonPanelLayout->addWidget(m_settingsButton);
+    buttonPanelLayout->addWidget(m_spectrumTableButton);
 
     QWidget *buttonPanel = new QWidget(this);
     buttonPanel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -374,6 +378,9 @@ void MainWidget::connectUi()
 
     CHECKED_CONNECT(m_engine, SIGNAL(phonemeChanged(char)),
             m_lipWidget, SLOT(changePicture(char)));
+
+    CHECKED_CONNECT(m_spectrumTableButton, SIGNAL(pressed()),
+            m_engine, SLOT(showSampleTable()));
 
 #ifndef DISABLE_WAVEFORM
     CHECKED_CONNECT(m_engine, SIGNAL(bufferChanged(qint64, qint64, const QByteArray &)),

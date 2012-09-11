@@ -6,7 +6,14 @@
 #include "frequencyspectrum.h"
 #include "QLayout"
 #include "QLabel"
+#include "QScrollArea"
+
 #include "spectrograph.h"
+
+#include "QBoxLayout"
+#include "QComboBox"
+
+#include "spectrum.h"
 
 
 namespace Ui {
@@ -22,7 +29,8 @@ public:
 
     void addSpectrum(FrequencySpectrum & spectrum,QString description);
     ~SpectrumTable();
-    
+public slots:
+    void changePicture(int index);
 private:
     Ui::SpectrumTable *ui;
 
@@ -30,6 +38,10 @@ private:
     QVector<QString> m_descriptions;
 
     QLayout * m_layout;
+    Spectrograph * m_spectrograph;
+    QScrollArea * m_scrollArea;
+
+    QComboBox * m_combo;
 };
 
 #endif // SPECTRUMTABLE_H

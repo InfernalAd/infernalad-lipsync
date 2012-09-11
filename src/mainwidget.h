@@ -131,6 +131,8 @@ private:
     QPushButton*            m_settingsButton;
     QIcon                   m_settingsIcon;
 
+    QPushButton*            m_spectrumTableButton;
+
     QLabel*                 m_infoMessage;
     int                     m_infoMessageTimerId;
 

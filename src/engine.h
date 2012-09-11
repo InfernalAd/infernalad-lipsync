@@ -187,6 +187,8 @@ public slots:
 
     void insertSample(FrequencySpectrum sample);
 
+    void showSampleTable();
+
 signals:
     void stateChanged(QAudio::Mode mode, QAudio::State state);
 

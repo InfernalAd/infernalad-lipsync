@@ -109,10 +109,10 @@ float FrequencySpectrum::compareWith(FrequencySpectrum &spectrum)
 {
     double res=0;
 
-    int miniWidth = spectrum.count()/16;
-    double miniThis[16];
-    double miniSpectrum[16];
-    for (int i=0;i!=16;i++)
+    int miniWidth = spectrum.count()/32;
+    double miniThis[32];
+    double miniSpectrum[32];
+    for (int i=0;i!=32;i++)
     {
         double value=0;
         for (int j=i*miniWidth;j!=((i+1)*miniWidth-1);j++)
@@ -122,7 +122,7 @@ float FrequencySpectrum::compareWith(FrequencySpectrum &spectrum)
         miniThis[i]=value;
     }
 
-    for (int i=0;i!=16;i++)
+    for (int i=0;i!=32;i++)
     {
         double value=0;
         for (int j=i*miniWidth;j!=((i+1)*miniWidth-1);j++)
@@ -133,22 +133,47 @@ float FrequencySpectrum::compareWith(FrequencySpectrum &spectrum)
     }
 
 
+    /*
     for (int i=0;i!=16;i++)
     {
         res += miniThis[i]-miniSpectrum[i];
     }
-    //qDebug() << this->count()<< spectrum.count();
-    /*for (int i=0;i!= qMin(this->count(),spectrum.count());i++)
+    */
+
+    float sampleMathExpect = 0;
+    for (int i = 0; i < 32; ++i)
     {
-        //qDebug() << "111111" << i;
-        //qDebug() << "fabs" << fabs(this->value(i).amplitude - spectrum.value(i).amplitude);
-        //qDebug() << this->value(i).amplitude;
-        res += (this->value(i).amplitude - spectrum.value(i).amplitude);
-        //qDebug() << "222222" << i;
-    }*/
+        sampleMathExpect += miniThis[i];
+    }
 
+    sampleMathExpect = 1 / 32 * sampleMathExpect;
 
+    float spectMathExpect = 0;
+    for (int i = 0; i < 32; ++i)
+    {
+        spectMathExpect += miniSpectrum[i];
+    }
 
+    spectMathExpect = 1 / 32 * spectMathExpect;
+
+    float dividend = 0, divider1 = 0, divider2 = 0;
+
+    for (int i = 0; i < 32; ++i)
+    {
+        dividend += (miniThis[i] - sampleMathExpect) * (miniSpectrum[i] - spectMathExpect);
+    }
+
+    for (int i = 0; i < 32; ++i)
+    {
+        divider1 += pow((miniThis[i] - sampleMathExpect), 2);
+    }
+
+    for (int i = 0; i < 32; ++i)
+    {
+        divider2 += pow((miniSpectrum[i] - spectMathExpect), 2);
+    }
+
+    res = 1 - fabs(dividend / (sqrt(divider1) * sqrt(divider2)));
 
     return fabs(res);
 }

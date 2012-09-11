@@ -76,6 +76,7 @@ MainWidget::MainWidget(QWidget *parent)
     ,   m_playButton(new QPushButton(this))
     ,   m_settingsButton(new QPushButton(this))
     ,   m_spectrumTableButton(new QPushButton(this))
+    ,   m_lipWidgetButton(new QPushButton(this))
     ,   m_infoMessage(new QLabel(tr("Select a mode to begin"), this))
     ,   m_infoMessageTimerId(NullTimerId)
     ,   m_settingsDialog(new SettingsDialog(
@@ -96,7 +97,7 @@ MainWidget::MainWidget(QWidget *parent)
 
 MainWidget::~MainWidget()
 {
-
+    m_lipWidget->close();
 }
 
 
@@ -181,6 +182,11 @@ void MainWidget::bufferLengthChanged(qint64 length)
     m_progressBar->bufferLengthChanged(length);
 }
 
+void MainWidget::showLipSync()
+{
+    m_lipWidget->show();
+}
+
 
 //-----------------------------------------------------------------------------
 // Private slots
@@ -227,7 +233,6 @@ void MainWidget::createUi()
 {
     m_lipWidget = new LipWidget();
     m_lipWidget->setWindowTitle("LipWidget");
-    m_lipWidget->show();
 
     createMenus();
 
@@ -269,6 +274,10 @@ void MainWidget::createUi()
     m_modeButton->setText(tr("Mode"));
 
     m_spectrumTableButton->setText("Spectrum table");
+    m_spectrumTableButton->setMinimumSize(buttonSize);
+
+    m_lipWidgetButton->setText("LipWidget");
+    m_lipWidgetButton->setMinimumSize(buttonSize);
 
     m_recordIcon = QIcon(":/images/record.png");
     m_recordButton->setIcon(m_recordIcon);
@@ -302,6 +311,7 @@ void MainWidget::createUi()
     buttonPanelLayout->addWidget(m_playButton);
     buttonPanelLayout->addWidget(m_settingsButton);
     buttonPanelLayout->addWidget(m_spectrumTableButton);
+    buttonPanelLayout->addWidget(m_lipWidgetButton);
 
     QWidget *buttonPanel = new QWidget(this);
     buttonPanel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -316,6 +326,9 @@ void MainWidget::createUi()
     // Apply layout
 
     setLayout(windowLayout);
+
+
+    //m_lipWidget->show();
 
 //
 //    m_lipWidget->showMaximized();
@@ -382,6 +395,9 @@ void MainWidget::connectUi()
     CHECKED_CONNECT(m_spectrumTableButton, SIGNAL(pressed()),
             m_engine, SLOT(showSampleTable()));
 
+    CHECKED_CONNECT(m_lipWidgetButton, SIGNAL(pressed()),
+            this, SLOT(showLipSync()));
+
 #ifndef DISABLE_WAVEFORM
     CHECKED_CONNECT(m_engine, SIGNAL(bufferChanged(qint64, qint64, const QByteArray &)),
             m_waveform, SLOT(bufferChanged(qint64, qint64, const QByteArray &)));
@@ -433,6 +449,12 @@ void MainWidget::reset()
     m_levelMeter->reset();
     m_spectrograph->reset();
     m_progressBar->reset();
+}
+
+void MainWidget::closeEvent(QCloseEvent * evt)
+{
+    m_lipWidget->close();
+    evt->accept();
 }
 
 void MainWidget::setMode(Mode mode)

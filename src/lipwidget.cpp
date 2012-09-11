@@ -2,7 +2,7 @@
 #include "ui_lipwidget.h"
 
 LipWidget::LipWidget(QWidget *parent) :
-    QWidget(parent),
+    QWidget(parent,Qt::Dialog),
     ui(new Ui::LipWidget)
 {
     ui->setupUi(this);

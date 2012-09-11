@@ -2,7 +2,7 @@
 <phonemes>
 
 	<phoneme char="o" path="phonemes/O_2.wav" />
-	<phoneme char="o" path="phonemes/O_2.wav" />
+	<phoneme char="o" path="phonemes/O_3.wav" />
 
 	<phoneme char="e" path="phonemes/E_2.wav" />
 	<phoneme char="e" path="phonemes/E_3.wav" />

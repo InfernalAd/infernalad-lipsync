@@ -45,6 +45,8 @@
 #include <QIcon>
 #include <QtMultimedia/qaudio.h>
 #include "lipwidget.h"
+#include "QCloseEvent"
+
 
 class Engine;
 class FrequencySpectrum;
@@ -84,6 +86,8 @@ public slots:
     void audioPositionChanged(qint64 position);
     void bufferLengthChanged(qint64 length);
 
+
+    void showLipSync();
 private slots:
     void showFileDialog();
     void showSettingsDialog();
@@ -97,6 +101,8 @@ private:
     void createMenus();
     void connectUi();
     void reset();
+
+    void closeEvent(QCloseEvent *);
 
     enum Mode {
         NoMode,
@@ -131,6 +137,7 @@ private:
     QPushButton*            m_settingsButton;
     QIcon                   m_settingsIcon;
 
+    QPushButton*            m_lipWidgetButton;
     QPushButton*            m_spectrumTableButton;
 
     QLabel*                 m_infoMessage;

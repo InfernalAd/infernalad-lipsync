@@ -247,7 +247,7 @@ void Engine::  loadSample(char ch, QString path)
     }
     sample->seek(0);
     qDebug() << sample->size();
-    QByteArray buffer = sample->read(8192*4);
+    QByteArray buffer = sample->read(sample->size());
     m_spectrumAnalyser.calculate(buffer,m_format,true,ch);
 }
 

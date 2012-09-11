@@ -176,5 +176,9 @@ float FrequencySpectrum::compareWith(FrequencySpectrum &spectrum)
     res = 1 - fabs(dividend / (sqrt(divider1) * sqrt(divider2)));
 
     return fabs(res);
+
+
+
+
 }
 

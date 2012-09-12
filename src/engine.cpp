@@ -226,11 +226,7 @@ void Engine::loadSamples(QString cfgPath)
     {
         this->loadSample(e.attribute("char")[0].toAscii(),e.attribute("path"));
         e = e.nextSibling().toElement();
-
     }
-
-
-
 }
 
 void Engine::  loadSample(char ch, QString path)
@@ -489,14 +485,14 @@ void Engine::audioDataReady()
 
 void Engine::spectrumChanged(const FrequencySpectrum &spectrum)
 {
-    ENGINE_DEBUG << "Engine::spectrumChanged" << "pos" << m_spectrumPosition;
+    //ENGINE_DEBUG << "Engine::spectrumChanged" << "pos" << m_spectrumPosition;
     if (m_samples.size() != 0)
     {
         char curPhoneme = '~';
         FrequencySpectrum smpl = const_cast<FrequencySpectrum&>(spectrum);
 
         FrequencySpectrum best = m_samples[0];
-        float prevDiff = 0.15;//Can you see, it's magic!
+        float prevDiff = (float)0.15;//Can you see, it's magic!
         float curDiff=0;
 
         for (int i=0;i!=m_samples.size();i++)
@@ -511,7 +507,7 @@ void Engine::spectrumChanged(const FrequencySpectrum &spectrum)
             }
         }
 
-        qDebug() << "Best" << curPhoneme;
+        //qDebug() << "Best" << curPhoneme;
         if (curPhoneme != _lastPhoneme)
         {
             emit phonemeChanged(curPhoneme);

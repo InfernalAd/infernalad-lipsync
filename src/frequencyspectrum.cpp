@@ -107,78 +107,68 @@ char FrequencySpectrum::phoneme()
 
 float FrequencySpectrum::compareWith(FrequencySpectrum &spectrum)
 {
-    double res=0;
+    double selectionThis[32];
+    double selectionSpectrum[32];
 
-    int miniWidth = spectrum.count()/32;
-    double miniThis[32];
-    double miniSpectrum[32];
-    for (int i=0;i!=32;i++)
-    {
-        double value=0;
-        for (int j=i*miniWidth;j!=((i+1)*miniWidth-1);j++)
-        {
-            value = qMax(value,this->value(j).amplitude);
-        }
-        miniThis[i]=value;
-    }
+    getSelection(elements(), selectionThis);
+    getSelection(spectrum.elements(), selectionSpectrum);
 
-    for (int i=0;i!=32;i++)
-    {
-        double value=0;
-        for (int j=i*miniWidth;j!=((i+1)*miniWidth-1);j++)
-        {
-            value = qMax(value,spectrum.value(j).amplitude);
-        }
-        miniSpectrum[i]=value;
-    }
+    double sampleMathExpect = 0;
+    double spectMathExpect = 0;
 
-
-    /*
-    for (int i=0;i!=16;i++)
-    {
-        res += miniThis[i]-miniSpectrum[i];
-    }
-    */
-
-    float sampleMathExpect = 0;
     for (int i = 0; i < 32; ++i)
     {
-        sampleMathExpect += miniThis[i];
+        sampleMathExpect += selectionThis[i];
     }
 
     sampleMathExpect = 1 / 32 * sampleMathExpect;
 
-    float spectMathExpect = 0;
     for (int i = 0; i < 32; ++i)
     {
-        spectMathExpect += miniSpectrum[i];
+        spectMathExpect += selectionSpectrum[i];
     }
 
     spectMathExpect = 1 / 32 * spectMathExpect;
 
-    float dividend = 0, divider1 = 0, divider2 = 0;
+    double dividend = 0, divider1 = 0, divider2 = 0;
 
     for (int i = 0; i < 32; ++i)
     {
-        dividend += (miniThis[i] - sampleMathExpect) * (miniSpectrum[i] - spectMathExpect);
+        dividend += (selectionThis[i] - sampleMathExpect) * (selectionSpectrum[i] - spectMathExpect);
     }
 
     for (int i = 0; i < 32; ++i)
     {
-        divider1 += pow((miniThis[i] - sampleMathExpect), 2);
+        divider1 += pow((selectionThis[i] - sampleMathExpect), 2);
     }
 
     for (int i = 0; i < 32; ++i)
     {
-        divider2 += pow((miniSpectrum[i] - spectMathExpect), 2);
+        divider2 += pow((selectionSpectrum[i] - spectMathExpect), 2);
     }
 
-    res = 1 - fabs(dividend / (sqrt(divider1) * sqrt(divider2)));
-
-    return fabs(res);
-
-
-
-
+    return 1 - fabs(dividend / (sqrt(divider1) * sqrt(divider2)));
 }
 
+QVector<FrequencySpectrum::Element>& FrequencySpectrum::elements()
+{
+    return m_elements;
+}
+
+void FrequencySpectrum::getSelection(QVector<Element>& elements, double selection[32])
+{
+    int size = elements.count() / 32;
+    double min, max;
+    for (int i = 0; i != 32; ++i)
+    {
+        min = 10000;
+        max = 0;
+        for (int j = i*size; j != ((i+1)*size-1); ++j)
+        {
+            min = qMin(min, elements[j].amplitude);
+            max = qMax(max, elements[j].amplitude);
+        }
+
+        selection[i] = (min + max) / 2;
+    }
+}

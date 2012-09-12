@@ -22,10 +22,9 @@ LipWidget::~LipWidget()
 
 void LipWidget::changePicture(char picKey)
 {
-    qDebug() << "chpic" << picKey;
+    qDebug() << "Change picture to" << picKey;
     if (_pictures.contains(picKey))
     {
-        //qDebug() << "setted" << picKey;
         ui->label->setPixmap(QPixmap::fromImage(*_pictures.value(picKey)));
         ui->label->adjustSize();
     }

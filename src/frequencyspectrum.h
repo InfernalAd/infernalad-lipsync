@@ -98,6 +98,8 @@ public:
     void setPhoneme(char ch);
     char phoneme();
     float compareWith(FrequencySpectrum & spectrum);
+    QVector<Element>& elements();
+    void getSelection(QVector<Element>& elements, double selection[32]);
 protected:
     QVector<Element> m_elements;
     char _phoneme;

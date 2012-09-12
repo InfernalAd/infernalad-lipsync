@@ -46,7 +46,13 @@
 #include <QtMultimedia/qaudio.h>
 #include "lipwidget.h"
 #include "QCloseEvent"
+#include "QCheckBox"
+#include "QComboBox"
+#include "QLabel"
 
+
+#include "choosephonemedialog.h"
+#include "frequencyspectrum.h"
 
 class Engine;
 class FrequencySpectrum;
@@ -88,6 +94,10 @@ public slots:
 
 
     void showLipSync();
+    void loadSampleFromStream();
+
+    void addSample(char);
+
 private slots:
     void showFileDialog();
     void showSettingsDialog();
@@ -95,6 +105,9 @@ private slots:
     void initializeRecord();
     void updateModeMenu();
     void updateButtonStates();
+
+    void toggleComboBox(int state);
+    void phonemeSelected(QString);
 
 private:
     void createUi();
@@ -123,9 +136,16 @@ private:
 #endif
     LipWidget *             m_lipWidget;
 
+    FrequencySpectrum       m_spectrum;
+    FrequencySpectrum       m_loadingSpectrum;
+
     ProgressBar*            m_progressBar;
     Spectrograph*           m_spectrograph;
     LevelMeter*             m_levelMeter;
+
+    QCheckBox*              m_checkBox;
+    QComboBox*              m_comboBox;
+    QLabel*                 m_lipLabel;
 
     QPushButton*            m_modeButton;
     QPushButton*            m_recordButton;
@@ -150,6 +170,8 @@ private:
     QAction*                m_loadFileAction;
     QAction*                m_generateToneAction;
     QAction*                m_recordAction;
+
+    char                    m_recordingPhoneme;
 
 };
 

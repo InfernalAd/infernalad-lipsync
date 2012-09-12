@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     frequencyspectrum.cpp \
     engine.cpp \
     lipwidget.cpp \
-    spectrumtable.cpp
+    spectrumtable.cpp \
+    choosephonemedialog.cpp
 
 HEADERS  += mainwindow.h \
     fftreal/TestWhiteNoiseGen.hpp \
@@ -93,11 +94,13 @@ HEADERS  += mainwindow.h \
     frequencyspectrum.h \
     engine.h \
     lipwidget.h \
-    spectrumtable.h
+    spectrumtable.h \
+    choosephonemedialog.h
 
 FORMS    += mainwindow.ui \
     lipwidget.ui \
-    spectrumtable.ui
+    spectrumtable.ui \
+    choosephonemedialog.ui
 
 OTHER_FILES += \
     fftreal/testapp.dpr \

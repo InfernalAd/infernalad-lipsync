@@ -77,6 +77,10 @@ MainWidget::MainWidget(QWidget *parent)
     ,   m_settingsButton(new QPushButton(this))
     ,   m_spectrumTableButton(new QPushButton(this))
     ,   m_lipWidgetButton(new QPushButton(this))
+    ,   m_lipLabel(new QLabel(this))
+    ,   m_checkBox(new QCheckBox(this))
+    ,   m_comboBox(new QComboBox(this))
+    ,   m_recordingPhoneme('a')
     ,   m_infoMessage(new QLabel(tr("Select a mode to begin"), this))
     ,   m_infoMessageTimerId(NullTimerId)
     ,   m_settingsDialog(new SettingsDialog(
@@ -132,6 +136,7 @@ void MainWidget::formatChanged(const QAudioFormat &format)
 void MainWidget::spectrumChanged(qint64 position, qint64 length,
                                  const FrequencySpectrum &spectrum)
 {
+    m_spectrum = spectrum;
     m_progressBar->windowChanged(position, length);
     m_spectrograph->spectrumChanged(spectrum);
 }
@@ -187,6 +192,18 @@ void MainWidget::showLipSync()
     m_lipWidget->show();
 }
 
+void MainWidget::loadSampleFromStream()
+{
+    m_loadingSpectrum = m_spectrum;
+}
+
+void MainWidget::addSample(char ch)
+{
+    qDebug() << "11111123123123";
+    m_spectrum.setPhoneme(ch);
+    m_engine->addSample(m_spectrum);
+}
+
 
 //-----------------------------------------------------------------------------
 // Private slots
@@ -234,6 +251,8 @@ void MainWidget::createUi()
     m_lipWidget = new LipWidget();
     m_lipWidget->setWindowTitle("LipWidget");
 
+
+
     createMenus();
 
     setWindowTitle(tr("Spectrum Analyser"));
@@ -279,6 +298,17 @@ void MainWidget::createUi()
     m_lipWidgetButton->setText("LipWidget");
     m_lipWidgetButton->setMinimumSize(buttonSize);
 
+    m_lipLabel->setText("Save spectrum?");
+
+    m_comboBox->setHidden(true);
+
+    for (char ch='a';ch <='z';ch++)
+    {
+        m_comboBox->addItem(QString(ch));
+    }
+
+
+
     m_recordIcon = QIcon(":/images/record.png");
     m_recordButton->setIcon(m_recordIcon);
     m_recordButton->setEnabled(false);
@@ -311,27 +341,36 @@ void MainWidget::createUi()
     buttonPanelLayout->addWidget(m_playButton);
     buttonPanelLayout->addWidget(m_settingsButton);
     buttonPanelLayout->addWidget(m_spectrumTableButton);
-    buttonPanelLayout->addWidget(m_lipWidgetButton);
+
+
+    QScopedPointer<QHBoxLayout> buttonPanelLayout2(new QHBoxLayout);
+    buttonPanelLayout2->addWidget(m_lipWidgetButton);
+    buttonPanelLayout2->addWidget(m_checkBox);
+    buttonPanelLayout2->addWidget(m_lipLabel);
+    buttonPanelLayout2->addWidget(m_comboBox);
 
     QWidget *buttonPanel = new QWidget(this);
     buttonPanel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     buttonPanel->setLayout(buttonPanelLayout.data());
     buttonPanelLayout.take(); // ownership transferred to buttonPanel
 
-    QScopedPointer<QHBoxLayout> bottomPaneLayout(new QHBoxLayout);
+    QWidget *buttonPanel2 = new QWidget(this);
+    buttonPanel2->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    buttonPanel2->setLayout(buttonPanelLayout2.data());
+    buttonPanelLayout2.take(); // ownership transferred to buttonPanel
+
+    QScopedPointer<QVBoxLayout> bottomPaneLayout(new QVBoxLayout);
     bottomPaneLayout->addWidget(buttonPanel);
+    bottomPaneLayout->addWidget(buttonPanel2);
+
+
     windowLayout->addLayout(bottomPaneLayout.data());
+
     bottomPaneLayout.take(); // ownership transferred to windowLayout
 
     // Apply layout
 
     setLayout(windowLayout);
-
-
-    //m_lipWidget->show();
-
-//
-//    m_lipWidget->showMaximized();
 }
 
 void MainWidget::connectUi()
@@ -380,6 +419,7 @@ void MainWidget::connectUi()
     CHECKED_CONNECT(m_engine, SIGNAL(spectrumChanged(qint64, qint64, const FrequencySpectrum &)),
             this, SLOT(spectrumChanged(qint64, qint64, const FrequencySpectrum &)));
 
+
     CHECKED_CONNECT(m_engine, SIGNAL(infoMessage(QString, int)),
             this, SLOT(infoMessage(QString, int)));
 
@@ -397,6 +437,13 @@ void MainWidget::connectUi()
 
     CHECKED_CONNECT(m_lipWidgetButton, SIGNAL(pressed()),
             this, SLOT(showLipSync()));
+
+    CHECKED_CONNECT(m_checkBox, SIGNAL(stateChanged(int)),
+            this, SLOT(toggleComboBox(int)));
+
+    CHECKED_CONNECT(m_comboBox, SIGNAL(activated(QString)),
+            this, SLOT(phonemeSelected(QString)));
+
 
 #ifndef DISABLE_WAVEFORM
     CHECKED_CONNECT(m_engine, SIGNAL(bufferChanged(qint64, qint64, const QByteArray &)),
@@ -438,6 +485,24 @@ void MainWidget::updateButtonStates()
                                (QAudio::ActiveState != m_engine->state() &&
                                 QAudio::IdleState != m_engine->state())));
     m_playButton->setEnabled(playEnabled);
+}
+
+void MainWidget::toggleComboBox(int state)
+{
+    if (state == Qt::Checked)
+    {
+        m_comboBox->setHidden(false);
+    }
+    else
+    {
+        m_comboBox->setHidden(true);
+    }
+
+}
+
+void MainWidget::phonemeSelected(QString str)
+{
+    m_recordingPhoneme = str[0].toAscii();
 }
 
 void MainWidget::reset()

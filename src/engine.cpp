@@ -251,6 +251,11 @@ void Engine::  loadSample(char ch, QString path)
     m_spectrumAnalyser.calculate(buffer,m_format,true,ch);
 }
 
+void Engine::addSample(FrequencySpectrum &sample)
+{
+    m_samples.push_back(sample);
+}
+
 
 //-----------------------------------------------------------------------------
 // Public slots

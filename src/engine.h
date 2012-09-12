@@ -178,6 +178,8 @@ public:
 
 
     void loadSample(char ch,QString path);
+
+    void addSample(FrequencySpectrum & spectrum);
 public slots:
     void startRecording();
     void startPlayback();
@@ -254,7 +256,7 @@ signals:
      */
     void bufferChanged(qint64 position, qint64 length, const QByteArray &buffer);
 
-    void  phonemeChanged(char);
+    void phonemeChanged(char);
 
 private slots:
     void audioNotify();

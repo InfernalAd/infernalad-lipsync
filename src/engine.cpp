@@ -628,7 +628,7 @@ void Engine::spectrumChanged(const FrequencySpectrum &spectrum)
         FrequencySpectrum smpl = const_cast<FrequencySpectrum&>(spectrum);
 
         FrequencySpectrum best = m_samples[0];
-        float prevDiff = (float)0.15;//Can you see, it's magic!
+        float prevDiff = (float)0.04;//Can you see, it's magic!
         float curDiff=0;
 
         for (int i=0;i!=m_samples.size();i++)

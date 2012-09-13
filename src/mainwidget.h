@@ -50,8 +50,6 @@
 #include "QComboBox"
 #include "QLabel"
 
-
-#include "choosephonemedialog.h"
 #include "frequencyspectrum.h"
 
 class Engine;

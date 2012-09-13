@@ -155,7 +155,10 @@ float FrequencySpectrum::compareWith(FrequencySpectrum &spectrum)
         divider2 += pow((selectionSpectrum[i] - spectMathExpect), 2);
     }
 
-    return 1 - fabs(dividend / (sqrt(divider1) * sqrt(divider2)));
+    float res = 1 - fabs(dividend / (sqrt(divider1) * sqrt(divider2)));
+
+    return res;
+
 }
 
 QVector<FrequencySpectrum::Element>& FrequencySpectrum::elements()

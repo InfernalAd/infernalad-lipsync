@@ -54,6 +54,9 @@
 
 #include "QtXml/QDomDocument"
 #include "QtXml/QXmlInputSource"
+#include "QtXml/QXmlStreamWriter"
+
+
 #include "QFile"
 #include "QDomElement"
 
@@ -176,6 +179,12 @@ public:
      */
     void loadSamples(QString cfgPath);
 
+    void loadSampleFromXML(QString path);
+
+    void saveSpectrumToXML(QString path,FrequencySpectrum& spectrum);
+
+    void saveAudioModel();
+    void loadAudioModel();
 
     void loadSample(char ch,QString path);
 

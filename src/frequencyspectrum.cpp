@@ -75,6 +75,14 @@ const FrequencySpectrum::Element &FrequencySpectrum::value(int index) const
     return m_elements[index];
 }
 
+void FrequencySpectrum::setValue(const FrequencySpectrum::Element &value, int index)
+{
+    if (index < m_elements.size())
+    {
+        m_elements[index] = value;
+    }
+}
+
 FrequencySpectrum::iterator FrequencySpectrum::begin()
 {
     return m_elements.begin();

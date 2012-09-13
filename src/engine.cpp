@@ -107,6 +107,7 @@ Engine::Engine(QObject *parent)
     ,   m_spectrumAnalyser()
     ,   m_spectrumPosition(0)
     ,   m_count(0)
+    ,   m_table(new SpectrumTable)
 {
     qRegisterMetaType<FrequencySpectrum>("FrequencySpectrum");
     qRegisterMetaType<WindowFunction>("WindowFunction");
@@ -229,6 +230,132 @@ void Engine::loadSamples(QString cfgPath)
     }
 }
 
+void Engine::loadSampleFromXML(QString path)
+{
+    FrequencySpectrum spectrum(SpectrumLengthSamples);
+    QDomDocument doc;
+    QXmlInputSource * source = new QXmlInputSource(new QFile(path));
+    bool loaded = doc.setContent(source,false);
+    QDomElement root = doc.documentElement();
+
+    char phoneme = root.attribute("phoneme")[0].toAscii();
+    QDomNodeList chunks = root.childNodes();
+    for (int i=0;i!= chunks.size();i++)
+    {
+        QDomElement e = chunks.at(i).toElement();
+        if (!e.isNull())
+        {
+            int index = e.attribute("index").toInt();
+            FrequencySpectrum::Element chunk;
+            chunk.amplitude = e.attribute("amplitude").toFloat();
+            chunk.frequency = e.attribute("frequency").toFloat();
+            chunk.phase = e.attribute("phase").toFloat();
+            spectrum.setValue(chunk,index);
+        }
+    }
+    spectrum.setPhoneme(phoneme);
+    m_samples.push_back(spectrum);
+    m_table->addSpectrum(spectrum,QString(spectrum.phoneme()));
+}
+
+void Engine::saveSpectrumToXML(QString path, FrequencySpectrum &spectrum)
+{
+    QFile * file = new QFile(path);
+    if (!file->open(QIODevice::WriteOnly))
+    {
+        qDebug() << "file" << path << "cannot be opened.";
+        return;
+    }
+
+    if (spectrum.phoneme() == '~')
+    {
+        return;
+    }
+
+    QXmlStreamWriter * xmlWriter = new QXmlStreamWriter;
+    xmlWriter->setAutoFormatting(true);
+    xmlWriter->setDevice(file);
+    xmlWriter->writeStartDocument();
+    xmlWriter->writeStartElement("spectrum");
+    xmlWriter->writeAttribute("phoneme",QString(spectrum.phoneme()));
+
+    for (int i=0;i!=spectrum.count();i++)
+    {
+        if (spectrum.value(i).amplitude != 0)
+        {
+
+            xmlWriter->writeEmptyElement("chunk");
+
+            xmlWriter->writeAttribute("index",QString::number(i));
+            xmlWriter->writeAttribute("amplitude",QString::number(spectrum.value(i).amplitude));
+            xmlWriter->writeAttribute("frequency",QString::number(spectrum.value(i).frequency));
+            xmlWriter->writeAttribute("phase",QString::number(spectrum.value(i).phase));
+        }
+    }
+
+    xmlWriter->writeEndElement();//spectrum
+
+    xmlWriter->writeEndDocument();
+    file->close();
+}
+
+void Engine::saveAudioModel()
+{
+    QString audioModelPath = QString();
+    QFile * file = new QFile("phonemes/audioModel.xml");
+    if (!file->open(QIODevice::WriteOnly))
+    {
+        qDebug() << "file" << audioModelPath << "cannot be opened.";
+        return;
+    }
+
+    QXmlStreamWriter * xmlWriter = new QXmlStreamWriter;
+    xmlWriter->setDevice(file);
+    xmlWriter->setAutoFormatting(true);
+
+    xmlWriter->writeStartDocument();
+    xmlWriter->writeStartElement("phonemes");
+
+    for (int i=0;i!= m_samples.size();i++)
+    {
+        if (m_samples[i].phoneme() != '~')
+        {
+            xmlWriter->writeEmptyElement("phoneme");
+            QString path = QString("phonemes/") + QString::number(i)+QString(".xml");
+            xmlWriter->writeAttribute("path",path);
+            this->saveSpectrumToXML(path,m_samples[i]);
+        }
+    }
+
+    xmlWriter->writeEndElement();
+    xmlWriter->writeEndDocument();
+
+    file->close();
+}
+
+void Engine::loadAudioModel()
+{
+    QString modelPath("phonemes/audioModel.xml");
+    FrequencySpectrum spectrum(SpectrumLengthSamples);
+    QDomDocument doc;
+    QXmlInputSource * source = new QXmlInputSource(new QFile(modelPath));
+    bool loaded = doc.setContent(source,false);
+    QDomElement root = doc.documentElement();
+
+    QDomNodeList phonemes = root.childNodes();
+    for (int i=0;i!= phonemes.size();i++)
+    {
+        QDomElement e = phonemes.at(i).toElement();
+        if (!e.isNull())
+        {
+            QString path = e.attribute("path");
+            this->loadSampleFromXML(path);
+        }
+    }
+    m_samples.push_back(spectrum);
+
+}
+
 void Engine::  loadSample(char ch, QString path)
 {
     qDebug() << "loading" << ch <<path;
@@ -249,7 +376,11 @@ void Engine::  loadSample(char ch, QString path)
 
 void Engine::addSample(FrequencySpectrum &sample)
 {
+    qDebug() << "Adding sample for" << sample.phoneme();
     m_samples.push_back(sample);
+    QString str = QString("sample spectrum for ") + QChar(sample.phoneme());
+
+    m_table->addSpectrum(sample,str);
 }
 
 
@@ -616,7 +747,7 @@ bool Engine::initialize()
     ENGINE_DEBUG << "Engine::initialize" << "m_dataLength" << m_dataLength;
     ENGINE_DEBUG << "Engine::initialize" << "format" << m_format;
 
-    m_table = new SpectrumTable;
+
 
     return result;
 }

@@ -94,9 +94,6 @@ public slots:
 
 
     void showLipSync();
-    void loadSampleFromStream();
-
-    void addSample(char);
 
 private slots:
     void showFileDialog();
@@ -136,7 +133,6 @@ private:
 #endif
     LipWidget *             m_lipWidget;
 
-    FrequencySpectrum       m_spectrum;
     FrequencySpectrum       m_loadingSpectrum;
 
     ProgressBar*            m_progressBar;
@@ -146,6 +142,11 @@ private:
     QCheckBox*              m_checkBox;
     QComboBox*              m_comboBox;
     QLabel*                 m_lipLabel;
+
+
+    int                     m_loadingCycles;
+    bool                    m_isPhonemeLoading;
+
 
     QPushButton*            m_modeButton;
     QPushButton*            m_recordButton;
@@ -170,6 +171,8 @@ private:
     QAction*                m_loadFileAction;
     QAction*                m_generateToneAction;
     QAction*                m_recordAction;
+
+    FrequencySpectrum       m_spectrum;
 
     char                    m_recordingPhoneme;
 

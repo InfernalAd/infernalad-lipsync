@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>LipWidget</class>
- <widget class="QWidget" name="LipWidget">
+ <class>ChoosePhonemeDialog</class>
+ <widget class="QWidget" name="ChoosePhonemeDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>145</width>
+    <height>111</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,30 +18,35 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>91</width>
-     <height>51</height>
+     <width>151</width>
+     <height>16</height>
     </rect>
    </property>
-   <property name="font">
-    <font>
-     <pointsize>36</pointsize>
-    </font>
-   </property>
    <property name="text">
-    <string>LOL</string>
+    <string>Choose your destination</string>
    </property>
   </widget>
-  <widget class="QLabel" name="picLabel">
+  <widget class="QComboBox" name="comboBox">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>60</y>
-     <width>46</width>
-     <height>13</height>
+     <y>40</y>
+     <width>111</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>70</y>
+     <width>81</width>
+     <height>21</height>
     </rect>
    </property>
    <property name="text">
-    <string>TextLabel</string>
+    <string>Load</string>
    </property>
   </widget>
  </widget>

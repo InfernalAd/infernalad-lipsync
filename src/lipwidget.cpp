@@ -7,11 +7,12 @@ LipWidget::LipWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     _pictures.insert('o',new QImage("images/o.png"));
-    _pictures.insert('e',new QImage("images/e.png"));
+    _pictures.insert('e',new QImage("images/EHGJK.png"));
     _pictures.insert('a',new QImage("images/a.png"));
-    _pictures.insert('u',new QImage("images/u.png"));
+    _pictures.insert('i',new QImage("images/JEEI.png"));
+    _pictures.insert('u',new QImage("images/OOUQW.png"));
 
-    _defaultPic = QImage("images/default.png");
+    _defaultPic = QImage("images/BDMP.png");
     this->changePicture('~');
 }
 
@@ -23,14 +24,15 @@ LipWidget::~LipWidget()
 void LipWidget::changePicture(char picKey)
 {
     qDebug() << "Change picture to" << picKey;
+    ui->label->setText(QString(picKey));
     if (_pictures.contains(picKey))
     {
-        ui->label->setPixmap(QPixmap::fromImage(*_pictures.value(picKey)));
-        ui->label->adjustSize();
+        ui->picLabel->setPixmap(QPixmap::fromImage(*_pictures.value(picKey)));
+        ui->picLabel->adjustSize();
     }
     else
     {
-        ui->label->setPixmap(QPixmap::fromImage(_defaultPic));
-        ui->label->adjustSize();
+        ui->picLabel->setPixmap(QPixmap::fromImage(_defaultPic));
+        ui->picLabel->adjustSize();
     }
 }

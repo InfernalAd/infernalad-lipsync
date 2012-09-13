@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phonemes>
+    <phoneme path="phonemes/0.xml"/>
+    <phoneme path="phonemes/1.xml"/>
+    <phoneme path="phonemes/2.xml"/>
+    <phoneme path="phonemes/3.xml"/>
+    <phoneme path="phonemes/4.xml"/>
+</phonemes>

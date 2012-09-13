@@ -80,7 +80,10 @@ MainWidget::MainWidget(QWidget *parent)
     ,   m_lipLabel(new QLabel(this))
     ,   m_checkBox(new QCheckBox(this))
     ,   m_comboBox(new QComboBox(this))
+    ,   m_loadingSpectrum(FrequencySpectrum(SpectrumLengthSamples))
+    ,   m_isPhonemeLoading(false)
     ,   m_recordingPhoneme('a')
+    ,   m_loadingCycles(0)
     ,   m_infoMessage(new QLabel(tr("Select a mode to begin"), this))
     ,   m_infoMessageTimerId(NullTimerId)
     ,   m_settingsDialog(new SettingsDialog(
@@ -93,7 +96,10 @@ MainWidget::MainWidget(QWidget *parent)
     ,   m_recordAction(0)
 {
     m_spectrograph->setParams(SpectrumNumBands, SpectrumLowFreq, SpectrumHighFreq);
-    m_engine->loadSamples(QString("phonemes/phonemes.xml"));
+    //m_engine->loadSamples(QString("phonemes/phonemes.xml"));
+
+    //m_engine->saveAudioModel();
+    m_engine->loadAudioModel();
 
     createUi();
     connectUi();
@@ -102,6 +108,7 @@ MainWidget::MainWidget(QWidget *parent)
 MainWidget::~MainWidget()
 {
     m_lipWidget->close();
+    m_engine->saveAudioModel();
 }
 
 
@@ -112,6 +119,31 @@ MainWidget::~MainWidget()
 void MainWidget::stateChanged(QAudio::Mode mode, QAudio::State state)
 {
     Q_UNUSED(mode);
+
+    if ((mode == QAudio::AudioInput) && (state == QAudio::ActiveState))
+    {
+        m_isPhonemeLoading = true;
+        m_checkBox->setVisible(false);
+    }
+    else if ((mode == QAudio::AudioInput) && ((state == QAudio::SuspendedState) || (state==QAudio::StoppedState)))
+    {
+        m_isPhonemeLoading = false;
+        m_checkBox->setVisible(true);
+
+        if (m_checkBox->checkState() == Qt::Checked)
+        {
+            m_checkBox->setCheckState(Qt::Unchecked);
+            m_loadingCycles = 0;
+            m_loadingSpectrum.setPhoneme(m_recordingPhoneme);
+
+            m_engine->addSample(m_loadingSpectrum);
+            //m_engine->saveSpectrumToXML("phonemes/test.xml",m_loadingSpectrum);
+
+
+            m_loadingSpectrum = FrequencySpectrum(SpectrumLengthSamples);
+        }
+    }
+
 
     updateButtonStates();
 
@@ -136,9 +168,21 @@ void MainWidget::formatChanged(const QAudioFormat &format)
 void MainWidget::spectrumChanged(qint64 position, qint64 length,
                                  const FrequencySpectrum &spectrum)
 {
-    m_spectrum = spectrum;
     m_progressBar->windowChanged(position, length);
     m_spectrograph->spectrumChanged(spectrum);
+
+    for (int i=0;i!=spectrum.count();i++)
+    {
+        //qDebug() <<i << spectrum.value(i).amplitude;
+    }
+
+    if ((m_isPhonemeLoading) &&(!m_comboBox->isHidden()))
+    {
+        m_loadingCycles += 1;
+        //m_loadingSpectrum.addSpectrum(spectrum);
+
+        m_loadingSpectrum = spectrum;
+    }
 }
 
 void MainWidget::infoMessage(const QString &message, int timeoutMs)
@@ -192,19 +236,6 @@ void MainWidget::showLipSync()
     m_lipWidget->show();
 }
 
-void MainWidget::loadSampleFromStream()
-{
-    m_loadingSpectrum = m_spectrum;
-}
-
-void MainWidget::addSample(char ch)
-{
-    qDebug() << "11111123123123";
-    m_spectrum.setPhoneme(ch);
-    m_engine->addSample(m_spectrum);
-}
-
-
 //-----------------------------------------------------------------------------
 // Private slots
 //-----------------------------------------------------------------------------
@@ -237,6 +268,8 @@ void MainWidget::initializeRecord()
 {
     reset();
     setMode(RecordMode);
+
+
     if (m_engine->initializeRecord())
         updateButtonStates();
 }

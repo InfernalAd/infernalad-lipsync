@@ -89,6 +89,7 @@ public:
     Element& operator[](int index);
     const Element& operator[](int index) const;
     const Element& value(int index) const;
+    void setValue(const Element& value,int index);
     iterator begin();
     iterator end();
     const_iterator begin() const;
@@ -100,6 +101,8 @@ public:
     float compareWith(FrequencySpectrum & spectrum);
     QVector<Element>& elements();
     void getSelection(QVector<Element>& elements, double selection[32]);
+
+
 protected:
     QVector<Element> m_elements;
     char _phoneme;

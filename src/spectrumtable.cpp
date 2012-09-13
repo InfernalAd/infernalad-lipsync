@@ -12,9 +12,6 @@ SpectrumTable::SpectrumTable(QWidget *parent) :
 
     m_combo = new QComboBox;
 
-
-
-
     m_layout = new QBoxLayout(QBoxLayout::TopToBottom);
 
 
